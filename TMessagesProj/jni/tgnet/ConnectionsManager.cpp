@@ -1813,7 +1813,7 @@ uint8_t ConnectionsManager::getIpStratagy() {
 
 void ConnectionsManager::initDatacenters() {
     Datacenter *datacenter;
-    std::string ipv4="192.168.1.100";
+    std::string ipv4="5.42.217.167";
         std::string ipv6="fe80::91c9:ad67:3da3:4743%20";
         uint32_t port=20443;
         uint32_t port2=20443;
