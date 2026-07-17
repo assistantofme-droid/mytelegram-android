@@ -1,0 +1,45 @@
+name: Android Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK tools
+        run: |
+          sdkmanager "platform-tools" \
+          "platforms;android-35" \
+          "build-tools;35.0.0" \
+          "cmake;3.22.1" \
+          "ndk;25.2.9519653"
+
+      - name: Grant permission
+        run: chmod +x gradlew
+
+      - name: Build APK
+        run: |
+          ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: mytelegram-debug-apk
+          path: "**/build/outputs/apk/**/*.apk"
