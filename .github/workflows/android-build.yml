@@ -49,7 +49,22 @@ jobs:
       - name: Find APK
         id: find_apk
         run: |
-          APK_PATH=$(find . -name "*.apk" -path "*afat*Debug*" | head -n 1)
+          echo "--- Listing all APKs produced ---"
+          find . -name "*.apk" -path "*/outputs/apk/*" -print
+
+          APK_PATH=$(find . -name "*.apk" -path "*/outputs/apk/*" | head -n 1)
+
+          if [ -z "$APK_PATH" ]; then
+            echo "No APK found under outputs/apk — widening search:"
+            find . -name "*.apk" -print
+            APK_PATH=$(find . -name "*.apk" | head -n 1)
+          fi
+
+          if [ -z "$APK_PATH" ]; then
+            echo "::error::No APK file found anywhere in the workspace."
+            exit 1
+          fi
+
           echo "apk_path=$APK_PATH" >> "$GITHUB_OUTPUT"
           echo "Found APK: $APK_PATH"
 
