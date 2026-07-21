@@ -3078,6 +3078,14 @@ public class LoginActivity extends BaseFragment implements NotificationCenter.No
             if (forceDisableSafetyNet || TextUtils.isEmpty(BuildVars.SAFETYNET_KEY)) {
                 settings.allow_firebase = false;
             }
+            // Disable allow_app_hash if the SMS retriever hash is not configured
+            // (BuildVars.getSmsHash() returns null for forks without the official
+            // Google Play app-hash). The backend won't append the hash to the SMS
+            // body anyway, so auto-fill via the SMS Retriever API won't work.
+            if (BuildVars.getSmsHash() == null) {
+                settings.allow_app_hash = false;
+                settings.allow_firebase = false;
+            }
 
             ArrayList<TLRPC.TL_auth_authorization> loginTokens = AuthTokensHelper.getSavedLogInTokens();
             if (loginTokens != null) {
