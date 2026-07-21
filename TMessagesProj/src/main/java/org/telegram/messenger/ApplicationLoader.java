@@ -248,6 +248,9 @@ public class ApplicationLoader extends Application {
         for (int a = 0; a < UserConfig.MAX_ACCOUNT_COUNT; a++) { //TODO improve account
             UserConfig.getInstance(a).loadConfig();
             MessagesController.getInstance(a);
+            // Route all DCs to the private MyTelegram backend before any
+            // MTProto handshake is attempted.
+            BackendConfig.applyIfPending(a);
             if (a == 0) {
                 SharedConfig.pushStringStatus = "__FIREBASE_GENERATING_SINCE_" + ConnectionsManager.getInstance(a).getCurrentTime() + "__";
             } else {
